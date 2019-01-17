@@ -1,0 +1,67 @@
+%% I. 清空环境变量
+clear all
+clc
+%% II. 训练集/测试集产生
+%% 读取数据
+disp('开始读取图片...');
+I = getPicData();
+% load I
+disp('图片读取完毕')
+%% 特征提取
+features = zeros(14, 13600);
+disp('开始特征提取...')
+for i=1:13600
+    % 先进行中值滤波
+    tmp = medfilt2(I(:,:,i),[3,3]);
+    % 得到特征向量
+    t= getFeature(tmp);
+    features(:,i) = t(:);
+end
+    features=features';
+% 标签 label 为长度为1000的列向量
+classes = 1:34;             %10个数字，24个字母
+classes = repmat(classes,400,1);
+classes = classes(:);
+disp('特征提取完毕')
+
+% 2 随机产生训练集和测试集
+P_train = [];
+T_train = [];
+P_test = [];
+T_test = [];
+for i = 1:34
+    temp_input = features((i-1)*400+1:i*400,:);
+    temp_output = classes((i-1)*400+1:i*400,:);
+    n = randperm(400);
+    % 训练集——380*34个样本
+    P_train = [P_train temp_input(n(1:380),:)'];
+    T_train = [T_train temp_output(n(1:380),:)'];
+    % 测试集——20*34个样本
+    P_test = [P_test temp_input(n(381:400),:)'];
+    T_test = [T_test temp_output(n(381:400),:)'];
+end
+
+%% III. 模型建立 
+ result_grnn = [];
+ p_train = P_train(1:14,:);
+ p_test = P_test(1:14,:);
+       %% 
+        % 1. GRNN创建及仿真测试
+        t = cputime;
+        % 创建网络
+%         my_net = feedforwardnet(15);
+%         my_net.trainFcn = 'trainbfg';
+%         my_net = train(my_net,P_train,T_train);
+        my_net = newgrnn(p_train,T_train);
+        % 仿真测试
+        t_sim_grnn = sim(my_net,p_test);
+        T_sim_grnn = round(t_sim_grnn);
+        t = cputime - t;
+        result_grnn =  T_sim_grnn';
+       %% 性能评价
+%  正确率accuracy
+accuracy_grnn = [];
+accuracy_grnn = length(find(result_grnn == T_test'))/length(T_test);
+fprintf('训练样本的测试正确率为\n  %d%%\n', round(accuracy_grnn*100));
+fprintf('建立网络模型共耗时 %f sec\n', t);
+save my_net
