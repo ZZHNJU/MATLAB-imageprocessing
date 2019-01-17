@@ -1,0 +1,23 @@
+function result_new = recognize_zzh(result)
+for i=0:9
+    if result == i
+        result_new = char(i+48)
+    end
+end
+for i=10:20
+    if result == i
+        result_new = char(i+55)
+    end
+end
+    if result == 21
+        result_new = char(i+56);
+    end
+    if result == 22
+        result_new = char(i+56);
+    end
+    for i=23:34
+      if result == i
+        result_new = char(i+57)
+      end
+    end
+end
