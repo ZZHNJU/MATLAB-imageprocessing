@@ -1,0 +1,392 @@
+function varargout = image_processing(varargin)
+% IMAGE_PROCESSING MATLAB code for image_processing.fig
+%      IMAGE_PROCESSING, by itself, creates a new IMAGE_PROCESSING or raises the existing
+%      singleton*.
+%
+%      H = IMAGE_PROCESSING returns the handle to a new IMAGE_PROCESSING or the handle to
+%      the existing singleton*.
+%
+%      IMAGE_PROCESSING('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in IMAGE_PROCESSING.M with the given input arguments.
+%
+%      IMAGE_PROCESSING('Property','Value',...) creates a new IMAGE_PROCESSING or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before image_processing_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to image_processing_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help image_processing
+
+% Last Modified by GUIDE v2.5 25-Dec-2018 15:21:35
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @image_processing_OpeningFcn, ...
+                   'gui_OutputFcn',  @image_processing_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before image_processing is made visible.
+function image_processing_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to image_processing (see VARARGIN)
+
+% Choose default command line output for image_processing
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes image_processing wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = image_processing_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+axis off;
+varargout{1} = handles.output;
+
+
+
+% --- Executes on button press in pushbutton1.
+function pushbutton1_Callback(hObject, eventdata, handles)
+    [filename, pathname] = uigetfile('*.jpg', '读取图片文件'); %选择图片文件
+    if isequal(filename,0)   %判断是否选择
+       msgbox('没有选择任何图片');
+    else
+       pathfile=fullfile(pathname, filename);  %获得图片路径
+       global  M;
+       M=imread(pathfile);     %将图片读入矩阵
+       axes(handles.axes1);
+       imshow(M);
+    end
+% hObject    handle to pushbutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+       button13=questdlg('你确定退出吗？','退出程序','Yes','No','Yes');
+       if strcmp(button13,'Yes')
+       close all;
+       end;
+
+    
+    
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% try
+% global M;
+% [PY2,PY1,PX2,PX1]=caisefenge(M);
+% [U V]=size(M);
+% [PY2,PY1,PX2,PX1,threshold]=xiuzheng(PY2,PY1,PX2,PX1);%车牌区域根据面积修正
+% Plate=M(PY1:PY2,PX1:PX2,:);%提取车牌
+% bw=Plate;
+% bw=rgb2gray(bw);
+% qingxiejiao=jiaodu(bw)%倾斜角
+% bw=imrotate(bw,qingxiejiao,'bilinear','crop');%车牌图像旋转，顺时针为正
+% bw=im2bw(bw);
+% bw=bwmorph(bw,'hbreak',inf);%消除H连通的像素
+% bw=bwmorph(bw,'spur',inf);%消除孤立像素
+% bw=bwmorph(bw,'open',5);%腐蚀、膨胀
+% bw=bwareaopen(bw, threshold);%消除面积小于阈值的对象
+% bw=~bw;
+% bw=touying(bw);
+% bw=~bw;
+% bw = bwareaopen(bw, threshold);
+% bw=~bw;%二次擦除
+% [y,x]=size(bw);%对长宽重新赋值
+% fenge=zifufenge(bw,qingxiejiao)%字符分割
+% [m,k]=size(fenge);
+% %给七张图片定位
+% han_zi  =bw( 1:y,fenge(1):fenge(2));
+% zi_mu   =bw( 1:y,fenge(3):fenge(4));
+% zm_sz_1 =bw( 1:y,fenge(5):fenge(6));
+% zm_sz_2 =bw( 1:y,fenge(7):fenge(8));  
+% zm_sz_3 =bw( 1:y,fenge(9):fenge(10)); 
+% zm_sz_4 =bw( 1:y,fenge(11):fenge(12)); 
+% zm_sz_5 =bw( 1:y,fenge(13):fenge(14)); 
+% word1 = double(imresize(han_zi, [20 16],'bilinear'));
+% word2 = double(imresize(zi_mu,  [20 16],'bilinear'));
+% word3 = double(imresize(zm_sz_1,[20 16],'bilinear'));
+% word4 = double(imresize(zm_sz_2,[20 16],'bilinear'));
+% word5 = double(imresize(zm_sz_3,[20 16],'bilinear'));
+% word6 = double(imresize(zm_sz_4,[20 16],'bilinear'));
+% word7 = double(imresize(zm_sz_5,[20 16],'bilinear'));
+%  figure
+%  subplot(5,7,1),imshow(word1),title('1');
+%  subplot(5,7,2),imshow(word2),title('2');
+%  subplot(5,7,3),imshow(word3),title('3');
+%  subplot(5,7,4),imshow(word4),title('4');
+%  subplot(5,7,5),imshow(word5),title('5');
+%  subplot(5,7,6),imshow(word6),title('6');
+%  subplot(5,7,7),imshow(word7),title('7');
+% catch               
+% 
+% 
+axes(handles.axes2);
+global M;
+I_gray=rgb2gray(M);
+%得图像背景图像
+s=strel('disk',16);
+I_bgray=imopen(I_gray,s);                                           %开运算
+%减去背景图像，增强图像
+I_egray=imsubtract(I_gray,I_bgray);
+
+
+%线性灰度变换
+I_gray=imadjust(I_gray,[0.3,0.7],[]);
+
+%进行中值滤波
+I_gray=medfilt2(I_gray);
+
+%边缘检测
+I2=edge(I_gray,'roberts',0.25,'both'); 
+se=[1;1;1];
+I3=imerode(I2,se);       
+se=strel('rectangle',[20,20]);
+I4=imclose(I3,se);                                          % 用20*20的矩形对图像进行闭运算
+I_cut=bwareaopen(I4,1000);                                  %把1000以下的照片删除了，这里也可以考虑用个30*30的模板进行开运算
+[y,x,z]=size(I_cut);                                        %y是行数，x是列数，射影变换
+myI=double(I_cut);
+tic   % 开始计时
+Blue_y=zeros(y,1);
+%二值图的像素点统计,行积分图
+for i=1:y
+     for j=1:x
+          if(myI(i,j,1)==1)            
+            Blue_y(i,1)= Blue_y(i,1)+1; 
+          end  
+      end       
+end
+[temp,MaxY]=max(Blue_y);                     % Y方向车牌区域确定 [temp MaxY]临时变量MaxY
+PY1=MaxY; 
+% 以下为找车牌Y方向最小值
+while ((Blue_y(PY1,1)>=5)&&(PY1>1))          %向上遍历 
+         PY1=PY1-1;
+end    
+PY2=MaxY;                                    %向下遍历
+%找y最大值
+while ((Blue_y(PY2,1)>=5)&&(PY2<y))
+         PY2=PY2+1;
+end
+%列积分图
+Blue_x=zeros(1,x);                          
+ for j=1:x
+      for i=PY1:PY2  
+          if(myI(i,j,1)==1) 
+             Blue_x(1,j)= Blue_x(1,j)+1;    
+          end 
+      end   
+ end
+                                        % 以下为找车牌X方向最小值
+PX1=1;                                               
+ while ((Blue_x(1,PX1)<5)&&(PX1<x))
+        PX1=PX1+1;
+ end    
+ PX2=x;                                 % 以下为找车牌X方向最大值
+ while ((Blue_x(1,PX2)<3)&&(PX2>PX1))
+         PX2=PX2-1;
+ end
+PY1=PY1-2;                              % 对车牌区域的校正
+PX1=PX1-2;
+PX2=PX2+5;
+PY2=PY2+4;
+global dw;
+dw=M(PY1:PY2,PX1:PX2,:);            % 裁剪图像
+imshow(dw);
+
+
+
+
+
+
+
+
+
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+global dw;
+axes(handles.axes3);
+b=rgb2gray(dw);
+%线性灰度变换
+b=imadjust(b,[0.3,0.7],[]);
+%进行二值化处理
+d_cut=im2bw(b,0.4);%将灰度图像进行二值化处理
+%进行中值滤波
+d_cut=medfilt2(d_cut);
+se=eye(2); 
+[m,n]=size(d_cut);
+if bwarea(d_cut)/m/n>=0.365                         %计算面积，然后判断是否应该进行腐蚀或者膨胀操作
+     d_cut=imerode(d_cut,se);
+elseif bwarea(d_cut)/m/n<=0.235
+     d_cut=imdilate(d_cut,se);
+end
+imopen(d_cut,se); %开运算
+% 寻找连续有文字的块，若长度大于某阈值，则认为该块有两个字符组成，需要分割
+d_cut=qiege(d_cut);                                 %调用切割函数，继续将图像进行切割，只有图像的边缘点在边界的那种类型
+global chepai;
+chepai=d_cut;
+imshow(chepai);
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+global chepai;
+d_cut=chepai;
+y1=10;y2=0.25;flag=0;word1=[];
+ while flag==0  % flag为自定义，以便标记循环用
+     [m,n]=size(d_cut);
+     left=1;
+     wide=0;
+     while sum(d_cut(:,wide+1))~=0 % 
+         wide=wide+1;
+     end
+     if wide<y1                          % 要是小于10的话，有可能是没有切好，有小棒棒等东西干扰
+         d_cut(:,[1:wide])=0;            % 所以我们要把小棒棒变黑，就是将白色汉字前的白色弄成黑色
+         d_cut=qiege(d_cut);             % 然后再次调用切割子程序
+     else
+         temp=qiege(imcrop(d_cut,[1 1 wide m]));    %切割结果放在temp,m不变，n会改变
+         [m,n]=size(temp);          
+         flag=1;word1=temp;                     %第一个字符
+         d_cut(:,[1:wide])=0;d_cut=qiege(d_cut);
+     end
+ end
+ % 分割出第二个字符
+ [word2,d_cut]=getword(d_cut);
+ % 分割出第三个字符
+ [word3,d_cut]=getword(d_cut);
+ % 分割出第四个字符
+ [word4,d_cut]=getword(d_cut);
+ % 分割出第五个字符
+ [word5,d_cut]=getword(d_cut);
+ % 分割出第六个字符
+ [word6,d_cut]=getword(d_cut);
+ % 分割出第七个字符
+ [word7,d_cut]=getword(d_cut);
+ 
+ word1=double(imresize(word1,[20 16]));%imresize对图像做缩放处理，常用调用格式为：B=imresize(A,ntimes,method)；其中method可选nearest,bilinear（双线性）,bicubic,box,lanczors2,lanczors3等
+ word2=double(imresize(word2,[20 16]));
+ word3=double(imresize(word3,[20 16]));
+ word4=double(imresize(word4,[20 16]));
+ word5=double(imresize(word5,[20 16]));
+ word6=double(imresize(word6,[20 16]));
+ word7=double(imresize(word7,[20 16]));
+ axes(handles.axes7);
+imshow(word1);
+axes(handles.axes8);
+imshow(word2);
+axes(handles.axes9);
+imshow(word3);
+axes(handles.axes10);
+imshow(word4);
+axes(handles.axes11);
+imshow(word5);
+axes(handles.axes12);
+imshow(word6);
+axes(handles.axes13);
+imshow(word7);
+ imwrite(word1,'1.jpg'); % 创建七位车牌字符图像
+ imwrite(word2,'2.jpg');
+ imwrite(word3,'3.jpg');
+ imwrite(word4,'4.jpg');
+ imwrite(word5,'5.jpg');
+ imwrite(word6,'6.jpg');
+ imwrite(word7,'7.jpg');
+
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+load my_net.mat
+ word2=imread('2.jpg');
+ word3=imread('3.jpg');
+ word4=imread('4.jpg');
+ word5=imread('5.jpg');
+ word6=imread('6.jpg');
+ word7=imread('7.jpg');
+ word2 = double([zeros(20,2),word2,zeros(20,2)]);
+ word3 = double([zeros(20,2),word3,zeros(20,2)]);
+ word4 = double([zeros(20,2),word4,zeros(20,2)]);
+ word5 = double([zeros(20,2),word5,zeros(20,2)]);
+ word6 = double([zeros(20,2),word6,zeros(20,2)]);
+ word7 = double([zeros(20,2),word7,zeros(20,2)]);
+tezheng_word2=getFeature(word2);
+tezheng_word3=getFeature(word3);
+tezheng_word4=getFeature(word4);
+tezheng_word5=getFeature(word5);
+tezheng_word6=getFeature(word6);
+tezheng_word7=getFeature(word7);
+result2 = sim(my_net,tezheng_word2)-1;
+result3 = sim(my_net,tezheng_word3)-1;
+result4 = sim(my_net,tezheng_word4)-1;
+result5 = sim(my_net,tezheng_word5)-1;
+result6 = sim(my_net,tezheng_word6)-1;
+result7 = sim(my_net,tezheng_word7)-1;
+result2 = recognize_zzh(result2);
+result3 = recognize_zzh(result3);
+result4 = recognize_zzh(result4);
+result5 = recognize_zzh(result5);
+result6 = recognize_zzh(result6);
+result7 = recognize_zzh(result7);
+shibiejieguo(1)=result2;
+shibiejieguo(2)=result2;
+shibiejieguo(3)=result3;
+shibiejieguo(4)=result4;
+shibiejieguo(5)=result5;
+shibiejieguo(6)=result6;
+shibiejieguo(7)=result7;
+msgbox(shibiejieguo,'识别结果');%对话框显示显示
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
